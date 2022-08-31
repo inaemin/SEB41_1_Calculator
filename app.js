@@ -43,38 +43,44 @@ function allclear() {
   num2 = "";
   oper = "+";
   displayNumber(num1);
+  previousKey = "clear";
   etc[0].innerHTML = "AC";
 }
 
+function calculate() {}
+
 function inputNumber(event) {
-  if (num2 !== "") {
+  if (!num2 && event.target.innerText === ".") {
+    num2 = "0.";
+  } else if (num2.includes(".") && event.target.innerText === ".") {
+    num2 = num2;
+  } else if (previousKey !== "calculate" && num2 !== "") {
     num2 += event.target.innerText;
   } else {
     num2 = event.target.innerText;
   }
+  previousKey = "number";
   displayNumber(num2);
   etc[0].innerHTML = "C";
 }
 
 function inputOperator(event) {
-  if (oper === "+") {
+  if (previousKey !== "operator" && oper === "+") {
     num1 = num1 + Number(num2);
-  } else if (oper === "−") {
+  } else if (previousKey !== "operator" && oper === "−") {
     num1 = num1 - Number(num2);
-  } else if (oper === "×") {
+  } else if (previousKey !== "operator" && oper === "×") {
     num1 = num1 * Number(num2);
-  } else if (oper === "÷") {
+  } else if (previousKey !== "operator" && oper === "÷") {
     num1 = num1 / Number(num2);
   }
   displayNumber(num1);
   num2 = "";
-  oper = event.target.innerText;
 
-  if (oper === "=") {
-    num1 = 0;
-    num2 = "";
-    oper = "+";
+  if (event.target.innerText !== "=") {
+    oper = event.target.innerText;
   }
+  previousKey = "operator";
 }
 
 function inputEtc(event) {
@@ -99,6 +105,7 @@ const display = document.getElementById("display");
 let num1 = 0;
 let num2 = "";
 let oper = "+";
+let previousKey = "clear";
 
 num.forEach((element) => element.addEventListener("click", inputNumber));
 operator.forEach((element) => element.addEventListener("click", inputOperator));
